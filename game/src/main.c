@@ -2,6 +2,7 @@
 #include "mathf.h"
 #include "raylib.h"
 #include "raymath.h"
+#include "World.h"
 
 #include <stdlib.h>
 #include <assert.h>
@@ -10,17 +11,18 @@
 
 int main(void)
 {
-	InitWindow(800, 450, "raylib [core] example - bbasic window");
+	InitWindow(1280, 720, "Physics Engine");
 
 	while (!WindowShouldClose())
 	{
-		InitWindow(1280, 720, "Physics Engine");
 		SetTargetFPS(60);
 
+		/*
 		Body* bodies = (Body*)malloc(sizeof(MAX_BODIES));
 		assert(bodies);
 
 		int bodyCount = 0;
+		*/
 
 		// game loop
 		while (!WindowShouldClose())
@@ -32,9 +34,15 @@ int main(void)
 			Vector2 position = GetMousePosition();
 			if (IsMouseButtonDown(0))
 			{
+				/*
 				bodies[bodyCount].position = position;
 				bodies[bodyCount].velocity = CreateVector2(GetRandomFloatValue(-5, 5), GetRandomFloatValue(-5, 5));
 				bodyCount++;
+				*/
+
+				Body* newBody = CreateBody();
+				newBody->position = position;
+				newBody->velocity = CreateVector2(GetRandomFloatValue(-5, 5), GetRandomFloatValue(-5, 5));
 			}
 
 			// render
@@ -45,16 +53,18 @@ int main(void)
 			DrawText(TextFormat("FRAME: %.4f", dt), 10, 30, 20, LIME);
 
 			DrawCircle((int)position.x, (int)position.y, 10, YELLOW);
-			for (int i = 0; i < bodyCount; i++)
+			
+			Body* currentBody = bodies;
+			while (currentBody)
 			{
-				bodies[i].position = Vector2Add(bodies[i].position, bodies[i].velocity);
-				DrawCircle((int)bodies[i].position.x, (int)bodies[i].position.y, 10, RED);
+				currentBody->position = Vector2Add(currentBody->position, Vector2Scale(currentBody->velocity, dt));
+				DrawCircle((int)currentBody->position.x, (int)currentBody->position.y, 5, RED);
+
+				currentBody = currentBody->next;
 			}
 
 			EndDrawing();
 		}
-
-		free(bodies);
 	}
 
 	CloseWindow();
