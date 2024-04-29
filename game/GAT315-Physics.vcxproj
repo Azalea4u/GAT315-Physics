@@ -266,11 +266,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.c" />
+    <ClCompile Include="src\World.c" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\raylib-master\raylib.vcxproj">
-      <Project>{8898EA18-743A-15EF-5DF5-284349369C3F}</Project>
-    </ProjectReference>
+    <ClInclude Include="src\body.h" />
+    <ClInclude Include="src\mathf.h" />
+    <ClInclude Include="src\World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
