@@ -1,8 +1,9 @@
 #pragma once
 #include "body.h"
 
-extern Body* bodies;
+extern ncBody* ncBodies;
 extern int bodyCount;
 
-Body* CreateBody();
-void* DestroyBody(Body* body);
+ncBody* CreateBody();
+void* DestroyBody(ncBody* body);
+void DestoryAllBodies();

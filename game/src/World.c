@@ -2,30 +2,34 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
-Body* bodies = NULL;
+ncBody* ncBodies = NULL;
 int bodyCount = 0;
 
-Body* CreateBody()
+ncBody* CreateBody()
 {
-	Body* newBody = (Body*)malloc(sizeof(Body));
+	ncBody* newBody = (ncBody*)malloc(sizeof(ncBody));
 	assert(newBody);
 
-	newBody->prev = NULL;
-	newBody->next = bodies;
+	memset(newBody, 0, sizeof(ncBody));
 
-	if (bodies)
+	// add body to linked list
+	newBody->prev = NULL;
+	newBody->next = ncBodies;
+
+	if (ncBodies)
 	{
-		bodies->prev = newBody;
+		ncBodies->prev = newBody;
 	}
 
-	bodies = newBody;
+	ncBodies = newBody;
 	bodyCount++;
 
 	return newBody;
 }
 
-void* DestroyBody(Body* body)
+void* DestroyBody(ncBody* body)
 {
 	if (body->prev)
 	{
@@ -33,7 +37,7 @@ void* DestroyBody(Body* body)
 	}
 	else
 	{
-		bodies = body->next;
+		ncBodies = body->next;
 	}
 
 	if (body->next)
@@ -43,4 +47,18 @@ void* DestroyBody(Body* body)
 
 	free(body);
 	bodyCount--;
+}
+
+void DestoryAllBodies()
+{
+	ncBody* currentBody = ncBodies;
+	while (currentBody)
+	{
+		ncBody* nextBody = currentBody->next;
+		free(currentBody);
+		currentBody = nextBody;
+	}
+
+	ncBodies = NULL;
+	bodyCount = 0;
 }
