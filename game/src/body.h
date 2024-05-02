@@ -21,6 +21,7 @@ typedef struct ncBody
 	ncBodyType type;
 	// accerlation -> velocity -> position
 	Vector2 position;
+	Vector2 prevPosition;
 	Vector2 velocity;
 	Vector2 acceleration;
 	Vector2 force;
@@ -58,4 +59,3 @@ inline void ClearForce(ncBody* body)
 {
 	body->force = Vector2Zero();
 }
-

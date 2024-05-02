@@ -31,12 +31,14 @@ int main(void)
 		{
 			ncBody* body = CreateBody();
 			body->position = position;
+			body->prevPosition = position;
 			body->mass = GetRandomFloatValue(1, 10);
 			body->inverseMass = 1 / body->mass;
 			body->type = BT_DYNAMIC;
 			body->damping = 2.5f;
 			body->gravityScale = 20.0f;
-			ApplyForce(body, (Vector2){ GetRandomFloatValue(-20, 20), GetRandomFloatValue(-20, 20) }, FM_VELOCITY);
+
+			ApplyForce(body, (Vector2){ GetRandomFloatValue(-200, 200), GetRandomFloatValue(-200, 200) }, FM_VELOCITY);
 		}
 
 		// apply force

@@ -1,5 +1,4 @@
 #pragma once
-#include "body.h"
 
 inline void ExplicitEuler(ncBody* body, float timestep)
 {
