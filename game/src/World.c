@@ -1,3 +1,4 @@
+#include "body.h"
 #include "World.h"
 
 #include <stdlib.h>
@@ -6,6 +7,7 @@
 
 ncBody* ncBodies = NULL;
 int bodyCount = 0;
+Vector2 ncGravity;
 
 ncBody* CreateBody()
 {
