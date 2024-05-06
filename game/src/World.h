@@ -1,6 +1,8 @@
 #pragma once
 #include <raylib.h>
 
+typedef struct ncBody ncBody;
+
 extern ncBody* ncBodies;
 extern int bodyCount;
 extern Vector2 ncGravity;

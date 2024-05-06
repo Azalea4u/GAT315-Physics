@@ -31,6 +31,8 @@ typedef struct ncBody
 	float gravityScale;
 	float damping;
 
+	Color color;
+
 	struct ncBody* next;
 	struct ncBody* prev;
 } ncBody;
