@@ -1,7 +1,9 @@
 #include "body.h"
 #include "intergrator.h"
+#include "editor.h"
 #include "force.h"
 #include "mathf.h"
+#include "render.h"
 #include "World.h"
 
 #include "raylib.h"
@@ -16,40 +18,45 @@ int main(void)
 {
 	InitWindow(1280, 720, "Physics Engine");
 	SetTargetFPS(60);
+	InitEditor();
 
 	// initialize world
-	ncGravity = (Vector2){ 0, 0 };
+	ncGravity = (Vector2){ 0, -1 };
 
 	// game loop
 	while (!WindowShouldClose())
 	{
 		// update
 		float dt = GetFrameTime();
-		float fps =(float)GetFPS();
+		float fps = (float)GetFPS();
 
 		Vector2 position = GetMousePosition();
+		ncScreenZoom += GetMouseWheelMove() * 0.2f;
+		ncScreenZoom = Clamp(ncScreenZoom, 0.1f, 10.0f);
+
+		UpdateEditor(position);
+
 		if (IsMouseButtonDown(0))
 		{
-			ncBody* body = CreateBody();
-			body->position = position;
-			body->prevPosition = position;
-			body->mass = GetRandomFloatValue(1, 10);
-			body->inverseMass = 1 / body->mass;
-			body->type = BT_DYNAMIC;
-			body->damping = 2.5f;
-			body->gravityScale = 20.0f;
-			body->color = ColorFromHSV(GetRandomFloatValue(0, 360), 1, 1);
+			for (int i = 0; i < 1; i++)
+			{
+				ncBody* body = CreateBody();
+				body->position = ConvertScreenToWorld(position);
+				body->mass = GetRandomFloatValue(ncEditorData.MassMinValue, ncEditorData.MassMaxValue);
+				body->inverseMass = 1 / body->mass;
+				body->type = BT_DYNAMIC;
+				body->damping = 0; // 2.5f;
+				body->gravityScale = 0;
+				body->color = ColorFromHSV(GetRandomFloatValue(0, 360), 1, 1);
 
-			//ApplyForce(body, (Vector2){ GetRandomFloatValue(-200, 200), GetRandomFloatValue(-200, 200) }, FM_VELOCITY);
-
-			Vector2 force = Vector2Scale(GetVector2FromAngle(GetRandomFloatValue(0, 360)), GetRandomFloatValue(100, 200));
-			ApplyForce(body, force, FM_VELOCITY);
+				//Vector2 force = Vector2Scale(GetVector2FromAngle(GetRandomFloatValue(0, 360)), GetRandomFloatValue(100, 200));
+				//ApplyForce(body, force, FM_VELOCITY); 
+			}
 		}
 
-		//ncBody* body = ncBodies;
 
 		//apply force
-		ApplyGravitation(ncBodies, 30);
+		ApplyGravitation(ncBodies, ncEditorData.GravitationValue);
 
 		// update bodies
 		for (ncBody* body = ncBodies; body; body = body->next)
@@ -70,6 +77,7 @@ int main(void)
 		// render
 		BeginDrawing();
 		ClearBackground(BLACK);
+
 		// stats
 		DrawText(TextFormat("FPS: %.2f (%.2fms)", fps, 1000/fps), 10, 10, 20, LIME);
 		DrawText(TextFormat("FRAME: %.4f", dt), 10, 30, 20, LIME);
@@ -79,8 +87,11 @@ int main(void)
 		// draw bodies
 		for (ncBody* body = ncBodies; body; body = body->next)
 		{
-			DrawCircle((int)body->position.x, (int)body->position.y, body->mass, body->color);
+			Vector2 screen = ConvertWorldToScreen(body->position);
+			DrawCircle((int)screen.x, (int)screen.y, ConvertWorldToPixel(body->mass), body->color);
 		}
+
+		DrawEditor();
 
 		/*
 		body = ncBodies;
