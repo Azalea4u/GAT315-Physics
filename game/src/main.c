@@ -42,7 +42,7 @@ int main(void)
 			{
 				ncBody* body = CreateBody();
 				body->position = ConvertScreenToWorld(position);
-				body->mass = GetRandomFloatValue(ncEditorData.MassMinValue, ncEditorData.MassMaxValue);
+				body->mass = GetRandomFloatValue(ncEditorData.MassMinBarValue, ncEditorData.MassMaxBarValue);
 				body->inverseMass = 1 / body->mass;
 				body->type = BT_DYNAMIC;
 				body->damping = 0; // 2.5f;
@@ -56,7 +56,7 @@ int main(void)
 
 
 		//apply force
-		ApplyGravitation(ncBodies, ncEditorData.GravitationValue);
+		ApplyGravitation(ncBodies, ncEditorData.GravitationBarValue);
 
 		// update bodies
 		for (ncBody* body = ncBodies; body; body = body->next)

@@ -3,9 +3,16 @@
 
 typedef struct ncEditorData
 {
-	float MassMinValue;
-	float MassMaxValue;
-	float GravitationValue;
+    Vector2 anchor01;
+
+    bool EditorBoxActive;
+    bool DropdownBoxEditMode;
+    int DropdownBoxActive;
+    float MassMinBarValue;
+    float MassMaxBarValue;
+    float DampingBarValue;
+    float GravityScaleBarValue;
+    float GravitationBarValue;
 } ncEditorData_t;
 
 extern ncEditorData_t ncEditorData;
