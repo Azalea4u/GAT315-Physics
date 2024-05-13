@@ -2,11 +2,11 @@
 #include "raylib.h"
 #include "raymath.h"
 
-typedef enum ncBodyType
+typedef enum
 {
-	STATIC,
+	BT_DYNAMIC,
 	BT_KINEMATIC,
-	BT_DYNAMIC
+	BT_STATIC
 } ncBodyType;
 
 typedef enum

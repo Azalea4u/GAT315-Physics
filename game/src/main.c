@@ -4,6 +4,7 @@
 #include "force.h"
 #include "mathf.h"
 #include "render.h"
+#include "spring.h"
 #include "World.h"
 
 #include "raylib.h"
@@ -12,13 +13,14 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#define MAX_BODIES 10000
-
 int main(void)
 {
+	ncBody* selectedBody = NULL;
+	ncBody* connectBody = NULL;
+
 	InitWindow(1280, 720, "Physics Engine");
-	SetTargetFPS(60);
 	InitEditor();
+	SetTargetFPS(60);
 
 	// initialize world
 	ncGravity = (Vector2){ 0, -1 };
@@ -36,43 +38,49 @@ int main(void)
 
 		UpdateEditor(position);
 
-		if (IsMouseButtonDown(0))
+		selectedBody = GetBodyIntersect(ncBodies, position);
+		if (selectedBody)
+		{
+			Vector2 screen = ConvertWorldToScreen(selectedBody->position);
+			DrawCircleLines((int)screen.x, (int)screen.y, ConvertWorldToPixel(selectedBody->mass) + 5, YELLOW);
+		}
+
+		// create body
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 		{
 			for (int i = 0; i < 1; i++)
 			{
-				ncBody* body = CreateBody();
-				body->position = ConvertScreenToWorld(position);
-				body->mass = GetRandomFloatValue(ncEditorData.MassMinBarValue, ncEditorData.MassMaxBarValue);
-				body->inverseMass = 1 / body->mass;
-				body->type = BT_DYNAMIC;
-				body->damping = 0; // 2.5f;
-				body->gravityScale = 0;
+				ncBody* body = CreateBody(ConvertScreenToWorld(position), ncEditorData.MassMinBarValue, ncEditorData.DropdownBoxActive);
+
+				body->damping = ncEditorData.DampingBarValue;
+				body->gravityScale = ncEditorData.GravityScaleBarValue;
 				body->color = ColorFromHSV(GetRandomFloatValue(0, 360), 1, 1);
 
-				//Vector2 force = Vector2Scale(GetVector2FromAngle(GetRandomFloatValue(0, 360)), GetRandomFloatValue(100, 200));
-				//ApplyForce(body, force, FM_VELOCITY); 
+				AddBody(body);
 			}
 		}
 
+		// connect springs
+		if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && selectedBody) connectBody = selectedBody;
+		if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && connectBody) DrawLineBodyToPosition(connectBody, position);
+		if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT) && connectBody)
+		{
+			if (selectedBody && selectedBody != connectBody)
+			{
+				ncSpring_t* spring = CreateSpring(connectBody, selectedBody, Vector2Distance(connectBody->position, selectedBody->position), 20);
+				AddSpring(spring);
+			}
+		}
 
 		//apply force
 		ApplyGravitation(ncBodies, ncEditorData.GravitationBarValue);
+		ApplySpringForce(ncSprings);
 
 		// update bodies
 		for (ncBody* body = ncBodies; body; body = body->next)
 		{
 			Step(body, dt);
 		}
-
-		/*
-		// update bodies
-		body = ncBodies;
-		while (body)
-		{
-			Step(body, dt);
-			body = body->next;
-		}
-		*/
 
 		// render
 		BeginDrawing();
@@ -82,7 +90,7 @@ int main(void)
 		DrawText(TextFormat("FPS: %.2f (%.2fms)", fps, 1000/fps), 10, 10, 20, LIME);
 		DrawText(TextFormat("FRAME: %.4f", dt), 10, 30, 20, LIME);
 
-		DrawCircle((int)position.x, (int)position.y, 10, YELLOW);
+		if (!ncEditorIntersect) DrawCircle((int)position.x, (int)position.y, ConvertWorldToPixel(1), YELLOW);
 
 		// draw bodies
 		for (ncBody* body = ncBodies; body; body = body->next)
@@ -90,17 +98,15 @@ int main(void)
 			Vector2 screen = ConvertWorldToScreen(body->position);
 			DrawCircle((int)screen.x, (int)screen.y, ConvertWorldToPixel(body->mass), body->color);
 		}
-
-		DrawEditor();
-
-		/*
-		body = ncBodies;
-		while (body)
+		// draw springs
+		for (ncSpring_t* spring = ncSprings; spring; spring = spring->next)
 		{
-			DrawCircle((int)body->position.x, (int)body->position.y, body->mass, body->color);
-			body = body->next;
+			Vector2 screen1 = ConvertWorldToScreen(spring->body1->position);
+			Vector2 screen2 = ConvertWorldToScreen(spring->body2->position);
+			DrawLine((int)screen1.x, (int)screen1.y, (int)screen2.x, (int)screen2.y, YELLOW);
 		}
-		*/
+
+		DrawEditor(position);
 
 		EndDrawing();
 	}

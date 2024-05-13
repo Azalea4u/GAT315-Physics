@@ -4,7 +4,7 @@
 typedef struct ncEditorData
 {
     Vector2 anchor01;
-
+     
     bool EditorBoxActive;
     bool DropdownBoxEditMode;
     int DropdownBoxActive;
@@ -21,5 +21,8 @@ extern bool ncEditorActive;
 extern bool ncEditorIntersect;
 
 void InitEditor();
-void UpdateEditor(Vector2 mousePosition);
-void DrawEditor();
+void UpdateEditor(Vector2 position);
+void DrawEditor(Vector2 position);
+
+struct ncBody* GetBodyIntersect(struct ncBody* bodies, Vector2 position); 
+void DrawLineBodyToPosition(struct ncBody* body, Vector2 position);
