@@ -4,10 +4,10 @@
 
 void Step(ncBody* body, float timestep)
 {
-	//body->force = Vector2Add(body->force, Vector2Scale(Vector2Scale(ncGravity, body->gravityScale), body->mass));
-	//body->acceleration = Vector2Scale(body->force, body->inverseMass);
+	body->force = Vector2Add(body->force, Vector2Scale(Vector2Scale(ncGravity, body->gravityScale), body->mass));
+	body->acceleration = Vector2Scale(body->force, body->inverseMass);
 	
-	timestep = 0.016f;
+	//timestep = 0.016f;
 	SemiImplicitEuler(body, timestep);
 
 	// apply damping
