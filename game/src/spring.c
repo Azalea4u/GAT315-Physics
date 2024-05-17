@@ -71,8 +71,8 @@ void ApplySpringForce(ncSpring_t* springs)
 		Vector2 direction = Vector2Subtract(spring->body2->position, spring->body1->position);
 		float distance = Vector2Length(direction);
 
-		float displacement = distance - spring->restLength;
-		float force = spring->k * displacement;
+		float x = distance - spring->restLength;
+		float force = spring->k * x; // f = -kx <- Hooke's Law
 
 		direction = Vector2Normalize(direction);
 

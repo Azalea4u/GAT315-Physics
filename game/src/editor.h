@@ -6,19 +6,20 @@ typedef struct ncEditorData
     Vector2 anchor01;
      
     bool EditorBoxActive;
-    bool DropdownBoxEditMode;
-    int DropdownBoxActive;
-    float MassMinBarValue;
-    float MassMaxBarValue;
-    float DampingBarValue;
-    float GravityScaleBarValue;
-    float GravitationBarValue;
+    bool BodyTypeEditMode;
+    int BodyTypeActive;
+    float MassValue;
+    float DampingValue;
+    float GravityScaleValue;
+    float StiffnessValue;
+	float GravityValue;
+    float GravitationValue;
 } ncEditorData_t;
 
 extern ncEditorData_t ncEditorData;
+extern bool ncEditorIntersect;
 
 extern bool ncEditorActive;
-extern bool ncEditorIntersect;
 
 void InitEditor();
 void UpdateEditor(Vector2 position);

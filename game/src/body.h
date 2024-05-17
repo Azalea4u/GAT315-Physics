@@ -31,6 +31,8 @@ typedef struct ncBody
 	float gravityScale;
 	float damping;
 
+	float restitution;
+
 	Color color;
 
 	struct ncBody* next;
@@ -61,3 +63,5 @@ inline void ClearForce(ncBody* body)
 {
 	body->force = Vector2Zero();
 }
+
+void Step(ncBody* body, float timestep);
