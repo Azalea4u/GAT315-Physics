@@ -19,6 +19,7 @@ int main(void)
 {
 	ncBody* selectedBody = NULL;
 	ncBody* connectBody = NULL;
+	ncContact_t* contacts = NULL;
 
 	InitWindow(1280, 720, "Physics Engine");
 	InitEditor();
@@ -26,6 +27,8 @@ int main(void)
 
 	// initialize world
 	ncGravity = (Vector2){ 0, -1 };
+	float fixedTimeStep = 1.0f / 50.0f;
+	float timeAccumulator = 0.0f;
 
 	// game loop
 	while (!WindowShouldClose())
@@ -81,21 +84,39 @@ int main(void)
 			}
 		}
 
-		//apply force
-		ApplyGravitation(ncBodies, ncEditorData.GravitationValue);
-		ApplySpringForce(ncSprings);
-
-		// update bodies
-		for (ncBody* body = ncBodies; body; body = body->next)
+		// check if simulation is running
+		if (ncEditorData.SimulationRunning)
 		{
-			Step(body, dt);
+			timeAccumulator += dt;
+
+			while (timeAccumulator >= fixedTimeStep)
+			{
+				timeAccumulator -= fixedTimeStep; // Subtract fixed timestep from accumulator
+
+				// Apply forces
+				ApplyGravitation(ncBodies, ncEditorData.GravitationValue);
+				ApplySpringForce(ncSprings);
+
+				// Update bodies
+				for (ncBody* body = ncBodies; body; body = body->next)
+				{
+					Step(body, fixedTimeStep); // Pass fixedTimestep as the timestep
+				}
+
+				// Collision
+				DestroyAllContacts(&contacts);
+				CreateContacts(ncBodies, &contacts);
+				SeparateContacts(contacts);
+				ResolveContacts(contacts);
+			}
 		}
 
-		// collision
-		ncContact_t* contacts = NULL;
-		CreateContacts(ncBodies, &contacts);
-		SeparateContacts(contacts);
-		ResolveContacts(contacts);
+		// reset simulation
+		if (ncEditorData.ResetSimulation)
+		{
+			DestroyAllContacts(&contacts);
+			ncEditorData.ResetSimulation = false;
+		}
 
 		// render
 		BeginDrawing();

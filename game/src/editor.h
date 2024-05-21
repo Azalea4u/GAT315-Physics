@@ -19,7 +19,7 @@ typedef struct ncEditorData
 	float TimeStepValue;
 
 	bool ResetSimulation;
-    bool SimulationControl;
+    bool SimulationRunning;
 } ncEditorData_t;
 
 extern ncEditorData_t ncEditorData;

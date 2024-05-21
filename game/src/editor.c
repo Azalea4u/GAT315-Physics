@@ -46,7 +46,7 @@ void InitEditor()
 
 	// simulation
 	ncEditorData.ResetSimulation = false;
-	ncEditorData.SimulationControl = false;
+	ncEditorData.SimulationRunning = false;
 
 	editorRect = (Rectangle){ ncEditorData.anchor01.x + 0, ncEditorData.anchor01.y + 0, 320, 720 };
 }
@@ -83,9 +83,19 @@ void DrawEditor(Vector2 position)
         GuiSlider((Rectangle) { ncEditorData.anchor01.x + 120, ncEditorData.anchor01.y + 408, 120, 16 }, "Gravitation", EDITOR_DATA(ncEditorData.GravitationValue), 0, 20);
         GuiSliderBar((Rectangle) { ncEditorData.anchor01.x + 120, ncEditorData.anchor01.y + 440, 120, 16 }, "Timestep", EDITOR_DATA(ncEditorData.TimeStepValue), 0, 100);
 
-        // Buttons
-        GuiButton((Rectangle) { ncEditorData.anchor01.x + 20, ncEditorData.anchor01.y + 536, 120, 40 }, "RESET");
-        GuiButton((Rectangle) { ncEditorData.anchor01.x + 160, ncEditorData.anchor01.y + 536, 120, 40 }, "SIMULATE");
+      
+    }
+
+    if (GuiButton((Rectangle) { ncEditorData.anchor01.x + 20, ncEditorData.anchor01.y + 536, 120, 40 }, "RESET"))
+    {
+        ncEditorData.SimulationRunning = false;
+        // Reset the simulation state here
+		ncEditorData.ResetSimulation = true;
+    }
+
+    if (GuiButton((Rectangle) { ncEditorData.anchor01.x + 160, ncEditorData.anchor01.y + 536, 120, 40 }, "SIMULATE"))
+    {
+        ncEditorData.SimulationRunning = !ncEditorData.SimulationRunning;
     }
 
     GuiUnlock();
