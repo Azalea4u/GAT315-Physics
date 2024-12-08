@@ -43,6 +43,7 @@ int main(void)
 		ncScreenZoom = Clamp(ncScreenZoom, 0.1f, 10.0f);
 
 		UpdateEditor(position);
+		fixedTimeStep = 1.0f / ncEditorData.TimeStepValue;
 
 		selectedBody = GetBodyIntersect(ncBodies, position);
 		if (selectedBody)
@@ -69,6 +70,29 @@ int main(void)
 
 					AddBody(body);
 				}
+			}
+
+			if (IsKeyDown(KEY_LEFT_ALT))
+			{
+				if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) && selectedBody) connectBody = selectedBody;
+				if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && connectBody) DrawLineBodyToPosition(connectBody, position);
+				if (connectBody)
+				{
+					Vector2 world = ConvertScreenToWorld(position);
+					if (connectBody->type == BT_STATIC || connectBody->type == BT_KINEMATIC)
+					{
+						connectBody->position = world;
+					}
+					else
+					{
+						ApplySpringForcePosition(world, connectBody, 0, 20, 5);
+					}
+				}
+			}
+			if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT))
+			{
+				selectedBody = NULL;
+				connectBody = NULL;
 			}
 		}
 
@@ -115,6 +139,7 @@ int main(void)
 		if (ncEditorData.ResetSimulation)
 		{
 			DestroyAllContacts(&contacts);
+			DestoryAllBodies();
 			ncEditorData.ResetSimulation = false;
 		}
 

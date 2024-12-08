@@ -81,7 +81,7 @@ void DrawEditor(Vector2 position)
         GuiGroupBox((Rectangle) { ncEditorData.anchor01.x + 16, ncEditorData.anchor01.y + 354, 272, 152 }, "World");
         GuiSlider((Rectangle) { ncEditorData.anchor01.x + 120, ncEditorData.anchor01.y + 376, 120, 16 }, "Gravity", EDITOR_DATA(ncEditorData.GravityValue), -10, 0);
         GuiSlider((Rectangle) { ncEditorData.anchor01.x + 120, ncEditorData.anchor01.y + 408, 120, 16 }, "Gravitation", EDITOR_DATA(ncEditorData.GravitationValue), 0, 20);
-        GuiSliderBar((Rectangle) { ncEditorData.anchor01.x + 120, ncEditorData.anchor01.y + 440, 120, 16 }, "Timestep", EDITOR_DATA(ncEditorData.TimeStepValue), 0, 100);
+        GuiSliderBar((Rectangle) { ncEditorData.anchor01.x + 120, ncEditorData.anchor01.y + 440, 120, 16 }, "Timestep", EDITOR_DATA(ncEditorData.TimeStepValue), 0, 120);
 
       
     }
